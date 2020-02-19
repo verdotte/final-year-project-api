@@ -1,0 +1,23 @@
+sudo: false
+services:
+  - mongodb
+env:
+  global:
+    - NODE_ENV=test
+    - JWT_SECRET=secret_restaurant_key
+    - DATABASE_URL_TEST=mongodb://localhost:27017/restaurant_db_test
+language: node_js
+node_js:
+  - '10.13.0'
+cache:
+  directories:
+    - node_modules
+branches:
+  only:
+    - develop
+install:
+  - npm install
+script:
+  - npm run test
+after_success:
+  - npm run coveralls
