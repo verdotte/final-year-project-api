@@ -7,7 +7,8 @@
     "build": "babel src --out-dir dist --ignore 'src/__tests__,src/__mocks__'",
     "dev": "babel-watch src/index.js",
     "start": "babel-node src/index.js",
-    "test": "cross-env NODE_ENV=test jest --coverage --runInBand --detectOpenHandles --forceExit"
+    "test": "cross-env NODE_ENV=test jest --coverage --runInBand --detectOpenHandles --forceExit",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "author": "Verdotte Aututu",
   "license": "ISC",
