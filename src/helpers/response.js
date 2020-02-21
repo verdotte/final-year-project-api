@@ -48,7 +48,8 @@ class Responses {
   }
 
   /**
-   * Handles responses with data
+   * Handles Joi responses
+   * @param {integer} statusCode - status code of the response
    * @param {method} res - response method to pass the response in json
    * @param {any} error -  error of the response
    * @return {object} returns a response
