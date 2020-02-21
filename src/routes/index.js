@@ -4,11 +4,12 @@ import {
   HTTP_METHOD_NOT_ALLOWED,
   HTTP_NOT_FOUND,
 } from '../constants/httpStatusCodes';
+import auth from './auth';
 
 const apiVersion = '/api/v1';
 
 const router = app => {
-  //   app.use(apiVersion, auth);
+  app.use(apiVersion, auth);
 
   app.get('/', (req, res) =>
     Responses.handleOk(HTTP_OK, 'Welcome to Restaurant API', res),

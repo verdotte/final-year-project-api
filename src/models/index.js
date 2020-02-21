@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-dotenv.config();
-
 import getDirFiles from '../helpers/getDirFiles';
+
+dotenv.config();
 
 const { DATABASE_URL, DATABASE_URL_TEST, NODE_ENV } = process.env;
 const URL = NODE_ENV === 'test' ? DATABASE_URL_TEST : DATABASE_URL;
@@ -12,11 +12,10 @@ const connectDb = () => {
   try {
     return mongoose.connect(URL, {
       useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
+      useUnifiedTopology: true,
     });
   } catch (err) {
-    logger.error(err.message);
+    process.stdout.write(err.message);
   }
 };
 

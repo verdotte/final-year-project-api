@@ -8,8 +8,8 @@ import { connectDb } from './models';
 
 const app = express();
 
-connectDb().then(async () => {
-  console.log('Mongodb connected');
+connectDb().then(() => {
+  process.stdout.write('Mongodb connected');
 });
 
 app.use(cors());

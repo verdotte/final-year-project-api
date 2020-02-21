@@ -4,7 +4,7 @@ services:
 env:
   global:
     - NODE_ENV=test
-    - JWT_SECRET=secret_restaurant_key
+    - JWT_SECRET_KEY=secret_restaurant_key
     - DATABASE_URL_TEST=mongodb://localhost:27017/restaurant_db_test
 language: node_js
 node_js:
