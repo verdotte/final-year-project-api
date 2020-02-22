@@ -4,14 +4,14 @@
   "description": "restaurant delevery system backend",
   "main": "src/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --ignore 'src/__tests__,src/__mocks__'",
+    "build": "babel src --out-dir dist --ignore src/__tests__ --ignore src/__mocks__",
     "dev": "babel-watch src/index.js",
     "start": "babel-node src/index.js",
     "test": "cross-env NODE_ENV=test npm run seed && cross-env NODE_ENV=test jest --coverage --runInBand --detectOpenHandles --forceExit",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "seed": "cross-env NODE_ENV=test babel-node src/seeders/index.js",
     "drop": "babel-node src/seeders/dropCollections.js",
-    "drop:test": "NODE_ENV=test npm run drop"
+    "drop:test": "cross-env NODE_ENV=test npm run drop"
   },
   "author": "Verdotte Aututu",
   "license": "ISC",
