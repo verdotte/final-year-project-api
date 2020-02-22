@@ -38,7 +38,7 @@ class Encrypt {
    *
    * @author Verdotte Aututu
    * @static
-   * @param  {Object} _id
+   * @param  {string} _id
    * @returns  {string} returns token
    */
   static generateToken(_id) {
@@ -46,6 +46,20 @@ class Encrypt {
       expiresIn: '2d',
     });
     return token;
+  }
+
+  /**
+   * Generate slug Method
+   *
+   * @author Verdotte Aututu
+   * @static
+   * @param  {string} text
+   * @returns  {string} returns slug
+   */
+  static slugGenerator(text) {
+    return `${text}-${Math.random()
+      .toString(36)
+      .substring(2, 15)}`;
   }
 }
 

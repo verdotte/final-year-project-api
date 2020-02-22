@@ -1,15 +1,15 @@
 import request from 'supertest';
-import app from '../app';
-import { User, Token } from '../models';
+import app from '../../app';
+import { User, Token } from '../../models';
 
 import {
   HTTP_OK,
   HTTP_UNAUTHORIZED,
   HTTP_CREATED,
-} from '../constants/httpStatusCodes';
+} from '../../constants/httpStatusCodes';
 
-import { userData } from '../__mocks__/dummyData';
-import { urlPrefix } from '../__mocks__/variables';
+import { userData } from '../../__mocks__/dummyData';
+import { urlPrefix } from '../../__mocks__/variables';
 
 let user, token, tokenData;
 
@@ -27,7 +27,6 @@ describe('User Authentication Test', () => {
       .send(userData);
     expect(res.status).toBe(HTTP_CREATED);
     expect(res.body.message).toBe('successful registered');
-    expect(res.body.data.username).toBe(userData.username);
   });
 
   test(`should fail to create a user with same username`, async () => {
@@ -48,10 +47,9 @@ describe('User Authentication Test', () => {
   });
 
   test(`should fail to login a user with wrong username`, async () => {
-    userData.username = 'fk-username';
     const res = await request(app)
       .post(`${urlPrefix}/auth/login`)
-      .send(userData);
+      .send({ username: 'fk-username', password: userData.password });
     expect(res.status).toBe(HTTP_UNAUTHORIZED);
     expect(res.body.error).toBe(
       'The credentials you provided are incorrect',
@@ -77,10 +75,10 @@ describe('User Authentication Test', () => {
     expect(res.body.message).toBe('success');
     expect(res.body.data.username).toBe('Nehemiah');
   });
-});
 
-afterAll(async () => {
-  await User.remove({});
-  await Token.remove({});
-  jest.clearAllMocks();
+  afterAll(async () => {
+    await User.deleteOne({ username: userData.username });
+    await app.close();
+    jest.clearAllMocks();
+  });
 });
