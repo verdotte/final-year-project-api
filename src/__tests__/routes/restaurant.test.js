@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../app';
-import { Token, User } from '../../models';
+import { Token, User, Restaurant } from '../../models';
 
 import {
   HTTP_OK,
@@ -123,4 +123,8 @@ describe('Restaurant', () => {
       expect(res.body.data).toHaveProperty('restaurantName');
     });
   });
+});
+
+afterAll(async () => {
+  await Restaurant.remove({});
 });

@@ -29,6 +29,10 @@ const RestaurantSchema = new Schema({
     type: Date,
     default: new Date(),
   },
+  numberOfOrder: {
+    type: Number,
+    default: 0,
+  },
 });
 
 RestaurantSchema.pre('save', function cb(next) {

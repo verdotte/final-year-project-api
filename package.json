@@ -16,11 +16,6 @@
   "author": "Verdotte Aututu",
   "license": "ISC",
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.4",
-    "@babel/node": "^7.8.4",
-    "@babel/preset-env": "^7.8.4",
-    "babel-watch": "^7.0.0",
     "coveralls": "^3.0.9",
     "cross-env": "^7.0.0",
     "eslint": "^6.8.0",
@@ -44,6 +39,11 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.1",
     "morgan": "^1.9.1",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-watch": "^7.0.0"
   }
 }
