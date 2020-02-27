@@ -6,6 +6,7 @@ import {
 } from '../constants/httpStatusCodes';
 import auth from './auth';
 import restaurant from './restaurant';
+import order from './order';
 
 const apiVersion = '/api/v1';
 const isProd = process.env.NODE_ENV === 'production';
@@ -13,6 +14,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const router = app => {
   app.use(apiVersion, auth);
   app.use(apiVersion, restaurant);
+  app.use(apiVersion, order);
 
   if (isProd) {
     app.get('/', (req, res) =>
