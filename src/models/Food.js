@@ -1,20 +1,25 @@
 import { Schema, model } from 'mongoose';
 import Encrypt from '../helpers/encrypt';
 
-const RestaurantSchema = new Schema({
-  restaurantName: {
+const FoodSchema = new Schema({
+  foodName: {
     type: String,
     required: true,
   },
-  restaurantImage: {
+  foodPrice: {
+    type: Number,
+    required: true,
+  },
+  foodImage: {
     type: String,
     default: null,
   },
-  restaurantAddress: {
-    type: String,
+  restaurantId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Restaurant',
     required: true,
   },
-  restaurantContact: {
+  cookingTime: {
     type: String,
     required: true,
   },
@@ -29,21 +34,17 @@ const RestaurantSchema = new Schema({
     type: Date,
     default: new Date(),
   },
-  numberOfOrder: {
-    type: Number,
-    default: 0,
-  },
-  numberOfFood: {
-    type: Number,
-    default: 0,
+  active: {
+    type: Boolean,
+    default: true,
   },
 });
 
-RestaurantSchema.pre('save', function cb(next) {
+FoodSchema.pre('save', function cb(next) {
   if (!this.slug) {
-    this.slug = Encrypt.slugGenerator(this.restaurantName);
+    this.slug = Encrypt.slugGenerator(this.foodName);
   }
   next();
 });
 
-export default model('Restaurant', RestaurantSchema);
+export default model('Food', FoodSchema);

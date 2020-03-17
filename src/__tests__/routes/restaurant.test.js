@@ -68,7 +68,7 @@ describe('Restaurant', () => {
       expect(res.body.error).toBe('restaurant does not exist');
     });
 
-    test('should return a `updated restaurant`', async () => {
+    test('should return an `updated restaurant`', async () => {
       const res = await request(app)
         .put(`${urlPrefix}/restaurant/${restaurantSlug}`)
         .set('Authorization', token)

@@ -16,7 +16,7 @@ let restaurant;
 let restaurantSlug;
 let orderSlug;
 let user;
-describe('Restaurant', () => {
+describe('Order', () => {
   beforeAll(async () => {
     user = await User.findOne({ username: 'Nehemiah' });
     tokenData = await Token.findOne({ user: user._id }).sort({
