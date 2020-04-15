@@ -3,6 +3,7 @@ import { HTTP_OK } from '../constants/httpStatusCodes';
 import Response from '../helpers/response';
 import { responseMessages } from '../constants';
 import orderFormatter from '../helpers/orderFormatter';
+import notifier from '../helpers/notifier';
 
 /**
  * Contains the order routes
@@ -30,6 +31,8 @@ class OrderController {
       { _id: restaurant._id },
       { numberOfOrder: restaurant.numberOfOrder + 1 },
     );
+
+    notifier('order', restaurant, res.app.connection);
 
     Response.handleSuccess(
       HTTP_OK,

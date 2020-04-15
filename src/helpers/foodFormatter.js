@@ -6,7 +6,7 @@ const foodFormatter = food => {
       foodName,
       foodPrice,
       foodImage,
-      restaurantId: { restaurantName },
+      restaurantId: { restaurantName, _id },
     }) => {
       return {
         cookingTime,
@@ -15,6 +15,7 @@ const foodFormatter = food => {
         foodPrice,
         foodImage,
         restaurantName,
+        restaurantId: _id,
       };
     },
   );
