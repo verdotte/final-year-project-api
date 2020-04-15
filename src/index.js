@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import socket from 'socket.io';
 import app from './app';
 
 dotenv.config();
@@ -19,6 +20,18 @@ const normalizePort = val => {
 
 const port = normalizePort(process.env.PORT || '5000');
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   process.stdout.write(`Server is running on port: ${port}\n`);
+});
+
+const io = socket(server, {
+  log: false,
+  origins: '*:*',
+});
+
+app.io = io;
+app.connection = [];
+
+app.io.on('connection', sock => {
+  app.connection.push(sock);
 });
