@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import paginate from 'mongoose-paginate';
 import Encrypt from '../helpers/encrypt';
 
 const FoodSchema = new Schema({
@@ -34,6 +35,10 @@ const FoodSchema = new Schema({
     type: Date,
     default: new Date(),
   },
+  numberOfOrder: {
+    type: Number,
+    default: 0,
+  },
   active: {
     type: Boolean,
     default: true,
@@ -46,5 +51,7 @@ FoodSchema.pre('save', function cb(next) {
   }
   next();
 });
+
+FoodSchema.plugin(paginate);
 
 export default model('Food', FoodSchema);

@@ -10,12 +10,7 @@ import {
 
 const router = express.Router();
 
-router
-  .route('/food')
-  .get(
-    asyncHandler(checkAuth),
-    asyncHandler(FoodController.findAllFood),
-  );
+router.route('/food').get(asyncHandler(FoodController.findAllFood));
 
 router
   .route('/food/:slug')

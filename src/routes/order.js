@@ -5,16 +5,17 @@ import {
   asyncHandler,
   checkOrder,
   checkAuth,
-  checkRestaurant,
+  checkRestaurantOrder,
+  checkFoodOrder,
 } from '../middlewares';
 
 const router = express.Router();
 
 router
-  .route('/order/:slug')
+  .route('/order/:restaurantId')
   .post(
-    asyncHandler(checkAuth),
-    asyncHandler(checkRestaurant),
+    asyncHandler(checkRestaurantOrder),
+    asyncHandler(checkFoodOrder),
     orderValidator,
     asyncHandler(OrderController.createOrder),
   );

@@ -1,21 +1,27 @@
 import request from 'supertest';
 import app from '../../app';
-import { Token, User, Restaurant, Order } from '../../models';
+import { Token, User, Restaurant, Order, Food } from '../../models';
 
 import {
   HTTP_OK,
   HTTP_UNAUTHORIZED,
 } from '../../constants/httpStatusCodes';
 
-import { restaurantData, orderData } from '../../__mocks__/dummyData';
+import {
+  restaurantData,
+  orderData,
+  foodData,
+} from '../../__mocks__/dummyData';
 import { urlPrefix } from '../../__mocks__/variables';
 
 let tokenData;
 let token;
 let restaurant;
-let restaurantSlug;
+let restaurantId;
 let orderSlug;
 let user;
+let food;
+let foodSlug;
 describe('Order', () => {
   beforeAll(async () => {
     user = await User.findOne({ username: 'Nehemiah' });
@@ -24,23 +30,18 @@ describe('Order', () => {
     });
     token = `Bearer ${tokenData.token}`;
     restaurant = await Restaurant.create({ ...restaurantData });
-    restaurantSlug = restaurant.slug;
+    restaurantId = restaurant._id;
     orderData.restaurantId = restaurant._id;
+    food = await Food.create({ ...foodData });
+    foodSlug = food.slug;
   });
 
   describe('create order', () => {
-    test('should return `Unauthorized access`', async () => {
-      const res = await request(app)
-        .post(`${urlPrefix}/order/${restaurantSlug}`)
-        .set('Authorization', 'fk-token')
-        .send(orderData);
-      expect(res.status).toBe(HTTP_UNAUTHORIZED);
-    });
-
     test('should return a `new order`', async () => {
       const res = await request(app)
-        .post(`${urlPrefix}/order/${restaurantSlug}`)
-        .set('Authorization', token)
+        .post(
+          `${urlPrefix}/order/${restaurantId}/?foodSlug=${foodSlug}`,
+        )
         .send(orderData);
       expect(res.status).toBe(HTTP_OK);
       expect(res.body.data).toHaveProperty('foodName');
@@ -49,8 +50,9 @@ describe('Order', () => {
     test('should fail to create a `new order`', async () => {
       delete orderData.foodName;
       const res = await request(app)
-        .post(`${urlPrefix}/order/${restaurantSlug}`)
-        .set('Authorization', token)
+        .post(
+          `${urlPrefix}/order/${restaurantId}/?foodSlug=${foodSlug}`,
+        )
         .send(orderData);
       expect(res.status).toBe(400);
       expect(res.body.message).toBe('foodName is required');
@@ -61,7 +63,9 @@ describe('Order', () => {
     beforeAll(async () => {
       orderData.foodName = 'Rice';
       const res = await request(app)
-        .post(`${urlPrefix}/order/${restaurantSlug}`)
+        .post(
+          `${urlPrefix}/order/${restaurantId}/?foodSlug=${foodSlug}`,
+        )
         .set('Authorization', token)
         .send(orderData);
       orderSlug = res.body.data.slug;
@@ -126,4 +130,5 @@ describe('Order', () => {
 afterAll(async () => {
   await Restaurant.remove({});
   await Order.remove({});
+  await Food.remove({});
 });
