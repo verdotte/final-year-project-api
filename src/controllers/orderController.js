@@ -1,4 +1,4 @@
-import { Order, Restaurant } from '../models';
+import { Order, Restaurant, Food } from '../models';
 import { HTTP_OK } from '../constants/httpStatusCodes';
 import Response from '../helpers/response';
 import { responseMessages } from '../constants';
@@ -22,7 +22,7 @@ class OrderController {
    * @memberof OrderController
    */
   static async createOrder(req, res) {
-    const { body, restaurant } = req;
+    const { body, restaurant, food } = req;
     const order = await Order.create({
       ...body,
     });
@@ -30,6 +30,11 @@ class OrderController {
     await Restaurant.updateOne(
       { _id: restaurant._id },
       { numberOfOrder: restaurant.numberOfOrder + 1 },
+    );
+
+    await Food.updateOne(
+      { _id: food._id },
+      { numberOfOrder: food.numberOfOrder + 1 },
     );
 
     notifier('order', restaurant, res.app.connection);

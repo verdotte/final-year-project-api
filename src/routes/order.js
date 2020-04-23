@@ -6,6 +6,7 @@ import {
   checkOrder,
   checkAuth,
   checkRestaurant,
+  checkFoodOrder,
 } from '../middlewares';
 
 const router = express.Router();
@@ -13,8 +14,8 @@ const router = express.Router();
 router
   .route('/order/:slug')
   .post(
-    asyncHandler(checkAuth),
     asyncHandler(checkRestaurant),
+    asyncHandler(checkFoodOrder),
     orderValidator,
     asyncHandler(OrderController.createOrder),
   );

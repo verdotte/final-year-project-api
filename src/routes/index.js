@@ -8,6 +8,7 @@ import auth from './auth';
 import restaurant from './restaurant';
 import order from './order';
 import food from './food';
+import feed from './feed';
 
 const apiVersion = '/api/v1';
 const isProd = process.env.NODE_ENV === 'production';
@@ -17,6 +18,7 @@ const router = app => {
   app.use(apiVersion, restaurant);
   app.use(apiVersion, order);
   app.use(apiVersion, food);
+  app.use(apiVersion, feed);
 
   app.get('/', (req, res) =>
     Responses.handleOk(HTTP_OK, 'Welcome to Restaurant API', res),
