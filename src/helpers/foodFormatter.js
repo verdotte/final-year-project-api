@@ -1,12 +1,14 @@
+/* eslint-disable no-undef */
 const foodFormatter = food => {
   food = food.map(
     ({
       cookingTime,
       slug,
+      _id,
       foodName,
       foodPrice,
       foodImage,
-      restaurantId: { restaurantName, _id },
+      restaurantId,
     }) => {
       return {
         cookingTime,
@@ -14,8 +16,9 @@ const foodFormatter = food => {
         foodName,
         foodPrice,
         foodImage,
-        restaurantName,
-        restaurantId: _id,
+        foodId: _id,
+        restaurantName: restaurantId.restaurantName,
+        restaurantId: restaurantId._id,
       };
     },
   );

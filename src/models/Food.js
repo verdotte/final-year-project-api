@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import paginate from 'mongoose-paginate';
+import paginate from 'mongoose-paginate-v2';
 import Encrypt from '../helpers/encrypt';
 
 const FoodSchema = new Schema({

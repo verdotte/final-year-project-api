@@ -1,9 +1,13 @@
+/* eslint-disable no-plusplus */
 import { Order, Restaurant, Food } from '../models';
-import { HTTP_OK } from '../constants/httpStatusCodes';
+import {
+  HTTP_OK,
+  HTTP_UNAUTHORIZED,
+} from '../constants/httpStatusCodes';
 import Response from '../helpers/response';
 import { responseMessages } from '../constants';
-import orderFormatter from '../helpers/orderFormatter';
 import notifier from '../helpers/notifier';
+import { PAGE_LIMIT } from '../constants/general';
 
 /**
  * Contains the order routes
@@ -13,8 +17,9 @@ import notifier from '../helpers/notifier';
 class OrderController {
   /**
    * Create Order Method
-   *
    * @author Verdotte Aututu
+   * @deprecated
+   *
    * @static
    * @param {*} req
    * @param {*} res
@@ -72,13 +77,35 @@ class OrderController {
    * @returns {object} res
    * @memberof OrderController
    */
-  static async findAllProcessedOrder(req, res) {
-    let order = await Order.find({
-      active: false,
-    }).populate('restaurantId', 'restaurantName');
+  static async findAllExistingOrder(req, res) {
+    const { page = 1 } = req.query;
+    const order = await Order.paginate(
+      { active: false },
+      {
+        populate: ['restaurantId', 'food'],
+        limit: PAGE_LIMIT,
+        offset: page - 1,
+        sort: { createdAt: -1 },
+      },
+    );
+    // await Order.remove({});
 
-    order = orderFormatter(order);
-    Response.handleSuccess(HTTP_OK, 'success', order, res);
+    if (order) {
+      const orderDoc = OrderController.orderFormatter(order.docs);
+      return Response.handleSuccess(
+        HTTP_OK,
+        'success',
+        {
+          orderDoc,
+          page: order.page,
+          totalPage: order.totalPages,
+          totalDoc: order.totalDocs,
+        },
+        res,
+      );
+    }
+
+    return Response.handleSuccess(HTTP_OK, 'success', order, res);
   }
 
   /**
@@ -91,13 +118,34 @@ class OrderController {
    * @returns {object} res
    * @memberof OrderController
    */
-  static async findAllUnProcessedOrder(req, res) {
-    let order = await Order.find({
-      active: true,
-    }).populate('restaurantId', 'restaurantName');
+  static async findAllNewOrder(req, res) {
+    const { page = 1 } = req.query;
+    const order = await Order.paginate(
+      { active: true },
+      {
+        populate: ['restaurantId', 'food'],
+        limit: PAGE_LIMIT,
+        offset: page - 1,
+        sort: { createdAt: -1 },
+      },
+    );
 
-    order = orderFormatter(order);
-    Response.handleSuccess(HTTP_OK, 'success', order, res);
+    if (order) {
+      const orderDoc = OrderController.orderFormatter(order.docs);
+      return Response.handleSuccess(
+        HTTP_OK,
+        'success',
+        {
+          orderDoc,
+          page: order.page,
+          totalPage: order.totalPages,
+          totalDoc: order.totalDocs,
+        },
+        res,
+      );
+    }
+
+    return Response.handleSuccess(HTTP_OK, 'success', order, res);
   }
 
   /**
@@ -122,6 +170,143 @@ class OrderController {
       order,
       res,
     );
+  }
+
+  /**
+   * Create Order Method
+   *
+   * @author Verdotte Aututu
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} res
+   * @memberof OrderController
+   */
+  static async placeOrder(req, res) {
+    const {
+      location,
+      restaurantId,
+      phoneNumber,
+      orderFood,
+    } = req.body;
+    const { restaurant } = req;
+    const food = [];
+    const foodQuantity = [];
+
+    orderFood.forEach(async ({ foodId, quantity }) => {
+      food.push(foodId);
+      foodQuantity.push(quantity);
+      const foodItem = await Food.findOne({
+        _id: foodId,
+      });
+
+      if (!foodItem) {
+        return Response.handleError(
+          HTTP_UNAUTHORIZED,
+          responseMessages.notExist('food'),
+          res,
+        );
+      }
+
+      await Food.updateOne(
+        { _id: foodId },
+        { numberOfOrder: foodItem.numberOfOrder + 1 },
+      );
+    });
+
+    const order = await Order.create({
+      location,
+      phoneNumber,
+      restaurantId,
+      food,
+      quantity: foodQuantity,
+    });
+
+    await Restaurant.updateOne(
+      { _id: restaurantId },
+      { numberOfOrder: restaurant.numberOfOrder + 1 },
+    );
+
+    notifier('order', restaurant, res.app.connection);
+
+    Response.handleSuccess(
+      HTTP_OK,
+      responseMessages.created('order'),
+      { order },
+      res,
+    );
+  }
+
+  /**
+   * Order Mapper
+   * @author Verdotte Aututu
+   *
+   * @static
+   * @param {Array} food
+   * @param {Array} quantity
+   * @returns {object}
+   * @memberof OrderController
+   */
+  static orderMapper(food, quantity) {
+    let totalPrice = 0;
+    const orderFood = [];
+    const totalFood = food.length;
+    for (let i = 0; i < totalFood; i++) {
+      totalPrice += food[i].foodPrice * quantity[i];
+      orderFood.push({
+        foodName: food[i].foodName,
+        foodPrice: food[i].foodPrice,
+        foodImage: food[i].foodImage,
+        cookingTime: food[i].cookingTime,
+        quantity: quantity[i],
+      });
+    }
+
+    return { totalPrice, totalFood, orderFood };
+  }
+
+  /**
+   * find all processed order Method
+   * @author Verdotte Aututu
+   *
+   * @static
+   * @param {Array[object]} order
+   * @returns {object} res
+   * @memberof OrderController
+   */
+  static orderFormatter(order) {
+    order = order.map(
+      ({
+        phoneNumber,
+        location,
+        slug,
+        _id,
+        createdAt,
+        updatedAt,
+        quantity,
+        restaurantId: { restaurantName },
+        food,
+      }) => {
+        const {
+          totalPrice,
+          totalFood,
+          orderFood,
+        } = OrderController.orderMapper(food, quantity);
+        return {
+          phoneNumber,
+          location,
+          slug,
+          orderId: _id,
+          createdAt,
+          updatedAt,
+          orderFood,
+          totalPrice,
+          totalFood,
+          restaurantName,
+        };
+      },
+    );
+    return order;
   }
 }
 

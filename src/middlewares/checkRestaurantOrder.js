@@ -4,7 +4,7 @@ import Response from '../helpers/response';
 import { responseMessages } from '../constants';
 
 const checkRestaurantOrder = async (req, res, next) => {
-  const { restaurantId } = req.params;
+  const { restaurantId } = req.body;
   const restaurantFound = await Restaurant.findOne({
     _id: restaurantId,
   });

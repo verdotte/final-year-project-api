@@ -22,7 +22,7 @@ class FeedController {
    */
   static async foodFeed(req, res) {
     const { page = 1 } = req.query;
-    let food = await Food.paginate(
+    const food = await Food.paginate(
       {
         active: true,
       },
@@ -32,7 +32,22 @@ class FeedController {
         offset: page - 1,
       },
     );
-    food = foodFormatter(food.docs);
+
+    if (food) {
+      const foodDoc = foodFormatter(food.docs);
+      return Response.handleSuccess(
+        HTTP_OK,
+        'success',
+        {
+          foodDoc,
+          page: food.page,
+          totalPage: food.totalPages,
+          totalDoc: food.totalDocs,
+        },
+        res,
+      );
+    }
+
     return Response.handleSuccess(
       HTTP_OK,
       'success',
@@ -54,7 +69,7 @@ class FeedController {
   static async findFoodByRestaurantId(req, res) {
     const { page = 1 } = req.query;
     const { restaurantId } = req.params;
-    let food = await Food.paginate(
+    const food = await Food.paginate(
       {
         active: true,
         restaurantId,
@@ -65,7 +80,21 @@ class FeedController {
         offset: page - 1,
       },
     );
-    food = foodFormatter(food.docs);
+    if (food) {
+      const foodDoc = foodFormatter(food.docs);
+      return Response.handleSuccess(
+        HTTP_OK,
+        'success',
+        {
+          foodDoc,
+          page: food.page,
+          totalPage: food.totalPages,
+          totalDoc: food.totalDocs,
+        },
+        res,
+      );
+    }
+
     return Response.handleSuccess(
       HTTP_OK,
       'success',

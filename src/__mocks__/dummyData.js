@@ -10,11 +10,8 @@ module.exports = {
     restaurantImage: 'linkfromfirebaseoftheImage',
   },
   orderData: {
-    foodName: 'Rice',
-    foodPrice: '300023',
     phoneNumber: '+25677788882',
     location: 'kansanga',
-    quantity: 2,
   },
   foodData: {
     foodName: 'Malewa',

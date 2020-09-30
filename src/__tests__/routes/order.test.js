@@ -21,7 +21,7 @@ let restaurantId;
 let orderSlug;
 let user;
 let food;
-let foodSlug;
+let foodId;
 describe('Order', () => {
   beforeAll(async () => {
     user = await User.findOne({ username: 'Nehemiah' });
@@ -33,42 +33,44 @@ describe('Order', () => {
     restaurantId = restaurant._id;
     orderData.restaurantId = restaurant._id;
     food = await Food.create({ ...foodData });
-    foodSlug = food.slug;
+    foodId = food._id;
   });
 
   describe('create order', () => {
     test('should return a `new order`', async () => {
       const res = await request(app)
-        .post(
-          `${urlPrefix}/order/${restaurantId}/?foodSlug=${foodSlug}`,
-        )
-        .send(orderData);
+        .post(`${urlPrefix}/order`)
+        .send({
+          ...orderData,
+          restaurantId,
+          orderFood: [{ foodId, quantity: 3 }],
+        });
       expect(res.status).toBe(HTTP_OK);
-      expect(res.body.data).toHaveProperty('foodName');
+      expect(res.body.data).toHaveProperty('order');
     });
 
-    test('should fail to create a `new order`', async () => {
-      delete orderData.foodName;
-      const res = await request(app)
-        .post(
-          `${urlPrefix}/order/${restaurantId}/?foodSlug=${foodSlug}`,
-        )
-        .send(orderData);
-      expect(res.status).toBe(400);
-      expect(res.body.message).toBe('foodName is required');
-    });
+    // test('should fail to create a `new order`', async () => {
+    //   delete orderData.foodName;
+    //   const res = await request(app)
+    //     .post(
+    //       `${urlPrefix}/order/${restaurantId}/?foodSlug=${foodSlug}`,
+    //     )
+    //     .send(orderData);
+    //   expect(res.status).toBe(400);
+    //   expect(res.body.message).toBe('foodName is required');
+    // });
   });
 
   describe('process an order', () => {
     beforeAll(async () => {
-      orderData.foodName = 'Rice';
       const res = await request(app)
-        .post(
-          `${urlPrefix}/order/${restaurantId}/?foodSlug=${foodSlug}`,
-        )
-        .set('Authorization', token)
-        .send(orderData);
-      orderSlug = res.body.data.slug;
+        .post(`${urlPrefix}/order`)
+        .send({
+          ...orderData,
+          restaurantId,
+          orderFood: [{ foodId, quantity: 3 }],
+        });
+      orderSlug = res.body.data.order.slug;
     });
 
     test('should return `Unauthorized access`', async () => {
@@ -104,7 +106,7 @@ describe('Order', () => {
       expect(res.body.message).toBe(
         'order has been updated successfully',
       );
-      expect(res.body.data).toHaveProperty('foodName');
+      expect(res.body.data).toBeDefined();
     });
   });
 

@@ -7,12 +7,14 @@ const orderFormatter = order => {
       foodPrice,
       quantity,
       restaurantId: { restaurantName },
+      food,
     }) => {
       return {
         phoneNumber,
         location,
         foodName,
         foodPrice,
+        food,
         quantity,
         restaurantName,
       };

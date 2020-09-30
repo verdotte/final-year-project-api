@@ -1,20 +1,20 @@
 import { Schema, model } from 'mongoose';
+import paginate from 'mongoose-paginate-v2';
 import Encrypt from '../helpers/encrypt';
 
 const OrderSchema = new Schema({
-  foodName: {
-    type: String,
-    required: true,
-  },
-  foodPrice: {
-    type: String,
-    required: true,
-  },
   restaurantId: {
     type: Schema.Types.ObjectId,
     ref: 'Restaurant',
     required: true,
   },
+  food: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Food',
+      required: true,
+    },
+  ],
   phoneNumber: {
     type: String,
     required: true,
@@ -23,10 +23,12 @@ const OrderSchema = new Schema({
     type: String,
     required: true,
   },
-  quantity: {
-    type: Number,
-    required: true,
-  },
+  quantity: [
+    {
+      type: Number,
+      required: true,
+    },
+  ],
   slug: {
     type: String,
   },
@@ -46,9 +48,11 @@ const OrderSchema = new Schema({
 
 OrderSchema.pre('save', function cb(next) {
   if (!this.slug) {
-    this.slug = Encrypt.slugGenerator(this.foodName);
+    this.slug = Encrypt.slugGenerator(this.restaurantId);
   }
   next();
 });
+
+OrderSchema.plugin(paginate);
 
 export default model('Order', OrderSchema);
