@@ -32,6 +32,20 @@ router
   );
 
 router
+  .route('/count/new')
+  .get(
+    asyncHandler(checkAuth),
+    asyncHandler(OrderController.getNewOrderNumber),
+  );
+
+router
+  .route('/count/old')
+  .get(
+    asyncHandler(checkAuth),
+    asyncHandler(OrderController.getOldOrderNumber),
+  );
+
+router
   .route('/order/:slug')
   .get(
     asyncHandler(checkAuth),

@@ -11,6 +11,12 @@ import {
 const router = express.Router();
 
 router.route('/food').get(asyncHandler(FoodController.findAllFood));
+router
+  .route('/count/food')
+  .get(
+    asyncHandler(checkAuth),
+    asyncHandler(FoodController.getFoodNumber),
+  );
 
 router
   .route('/food/:slug')

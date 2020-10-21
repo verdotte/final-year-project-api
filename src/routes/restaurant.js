@@ -16,7 +16,14 @@ router
     restauValidator,
     asyncHandler(RestaurantController.createRestaurant),
   )
-  .get(asyncHandler(RestaurantController.findAllRestaurant));
+  .get(
+    asyncHandler(checkAuth),
+    asyncHandler(RestaurantController.findAllRestaurant),
+  );
+
+router
+  .route('/count/restaurant')
+  .get(asyncHandler(RestaurantController.getRestaurantNumber));
 
 router
   .route('/restaurant/:slug')

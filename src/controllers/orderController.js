@@ -238,6 +238,42 @@ class OrderController {
   }
 
   /**
+   * Get New Order Number food Method
+   *
+   * @author Verdotte Aututu
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} res
+   * @memberof RestaurantController
+   */
+  static async getNewOrderNumber(req, res) {
+    const foodNumber = await Order.countDocuments({
+      active: true,
+    });
+
+    Response.handleSuccess(HTTP_OK, 'success', foodNumber, res);
+  }
+
+  /**
+   * Get Old Number food Method
+   *
+   * @author Verdotte Aututu
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} res
+   * @memberof RestaurantController
+   */
+  static async getOldOrderNumber(req, res) {
+    const foodNumber = await Order.countDocuments({
+      active: false,
+    });
+
+    Response.handleSuccess(HTTP_OK, 'success', foodNumber, res);
+  }
+
+  /**
    * Order Mapper
    * @author Verdotte Aututu
    *

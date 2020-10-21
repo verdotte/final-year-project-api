@@ -65,13 +65,15 @@ class FoodController {
    * @memberof OrderController
    */
   static async findAllFood(req, res) {
-    let food = await Food.find({}).populate(
+    const food = await Food.find({}).populate(
       'restaurantId',
       'restaurantName',
     );
-
-    food = foodFormatter(food);
-    Response.handleSuccess(HTTP_OK, 'success', food, res);
+    if (food) {
+      const foodDoc = foodFormatter(food);
+      return Response.handleSuccess(HTTP_OK, 'success', foodDoc, res);
+    }
+    return Response.handleSuccess(HTTP_OK, 'success', food, res);
   }
 
   /**
@@ -116,6 +118,22 @@ class FoodController {
       food,
       res,
     );
+  }
+
+  /**
+   * Get Food Number food Method
+   *
+   * @author Verdotte Aututu
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} res
+   * @memberof RestaurantController
+   */
+  static async getFoodNumber(req, res) {
+    const foodNumber = await Food.count({});
+
+    Response.handleSuccess(HTTP_OK, 'success', foodNumber, res);
   }
 }
 

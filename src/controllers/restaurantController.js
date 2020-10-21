@@ -106,6 +106,22 @@ class RestaurantController {
       res,
     );
   }
+
+  /**
+   * Get Restaurant Number food Method
+   *
+   * @author Verdotte Aututu
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} res
+   * @memberof RestaurantController
+   */
+  static async getRestaurantNumber(req, res) {
+    const foodNumber = await Restaurant.count({});
+
+    Response.handleSuccess(HTTP_OK, 'success', foodNumber, res);
+  }
 }
 
 export default RestaurantController;
