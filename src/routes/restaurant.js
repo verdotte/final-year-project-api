@@ -17,13 +17,15 @@ router
     asyncHandler(RestaurantController.createRestaurant),
   )
   .get(
-    asyncHandler(checkAuth),
     asyncHandler(RestaurantController.findAllRestaurant),
   );
 
 router
   .route('/count/restaurant')
-  .get(asyncHandler(RestaurantController.getRestaurantNumber));
+  .get(
+    asyncHandler(checkAuth),
+    asyncHandler(RestaurantController.getRestaurantNumber)
+  );
 
 router
   .route('/restaurant/:slug')
