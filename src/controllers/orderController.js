@@ -183,9 +183,7 @@ class OrderController {
    * @memberof OrderController
    */
   static async clearAllOrder(req, res) {
-    const { order } = req;
-    await order.remove({});
-
+    await Order.remove({});
     Response.handleSuccess(HTTP_OK, 'cleared!', {}, res);
   }
 
