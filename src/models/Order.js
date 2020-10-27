@@ -33,10 +33,12 @@ const OrderSchema = new Schema({
     type: String,
   },
   createdAt: {
-    type: String,
+    type: Date,
+    default: new Date(),
   },
   updatedAt: {
-    type: String,
+    type: Date,
+    default: new Date(),
   },
   active: {
     type: Boolean,

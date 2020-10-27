@@ -1,5 +1,4 @@
 /* eslint-disable no-plusplus */
-import moment from 'moment';
 import { Order, Restaurant, Food } from '../models';
 import {
   HTTP_OK,
@@ -185,6 +184,7 @@ class OrderController {
    */
   static async clearAllOrder(req, res) {
     await Order.remove({});
+
     Response.handleSuccess(HTTP_OK, 'cleared!', {}, res);
   }
 
@@ -208,9 +208,6 @@ class OrderController {
     const { restaurant } = req;
     const food = [];
     const foodQuantity = [];
-
-    const createdAt = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-    const updatedAt = createdAt;
 
     orderFood.forEach(async ({ foodId, quantity }) => {
       food.push(foodId);
@@ -239,8 +236,6 @@ class OrderController {
       restaurantId,
       food,
       quantity: foodQuantity,
-      updatedAt,
-      createdAt,
     });
 
     await Restaurant.updateOne(
