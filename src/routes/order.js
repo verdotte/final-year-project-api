@@ -58,4 +58,8 @@ router
     asyncHandler(OrderController.processOrder),
   );
 
+router
+  .route('/clear')
+  .delete(asyncHandler(OrderController.clearAllOrder));
+
 export default router;

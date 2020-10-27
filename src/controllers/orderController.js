@@ -173,6 +173,23 @@ class OrderController {
   }
 
   /**
+   * Clear All Order Method
+   *
+   * @author Verdotte Aututu
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} res
+   * @memberof OrderController
+   */
+  static async clearAllOrder(req, res) {
+    const { order } = req;
+    await order.remove({});
+
+    Response.handleSuccess(HTTP_OK, 'cleared!', {}, res);
+  }
+
+  /**
    * Create Order Method
    *
    * @author Verdotte Aututu

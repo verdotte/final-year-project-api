@@ -1,6 +1,10 @@
 import { Schema, model } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
+import moment from 'moment';
 import Encrypt from '../helpers/encrypt';
+
+const createdAt = moment().format('YYYY-MM-DD HH:mm ss');
+const updatedAt = createdAt;
 
 const OrderSchema = new Schema({
   restaurantId: {
@@ -38,11 +42,11 @@ const OrderSchema = new Schema({
   },
   updatedAt: {
     type: Date,
-    default: new Date(),
+    default: updatedAt,
   },
   active: {
     type: Boolean,
-    default: true,
+    default: createdAt,
   },
 });
 
